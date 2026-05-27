@@ -35,8 +35,32 @@ st.markdown(
       }
       .stApp {background: var(--ice);}
       .block-container {max-width: 1510px; padding: 1.05rem 1.45rem 1.4rem;}
-      section[data-testid="stSidebar"] {background: #ffffff; border-right: 1px solid var(--line);}
-      section[data-testid="stSidebar"] .block-container {padding-top: 1.25rem;}
+      section[data-testid="stSidebar"] {background: #edf3f7; border-right: 1px solid #dbe5ed;}
+      section[data-testid="stSidebar"] .block-container {padding-top: .92rem; padding-left: .78rem; padding-right: .78rem;}
+      section[data-testid="stSidebar"] .st-key-side_step_location [data-testid="stVerticalBlockBorderWrapper"],
+      section[data-testid="stSidebar"] .st-key-side_step_vessel [data-testid="stVerticalBlockBorderWrapper"],
+      section[data-testid="stSidebar"] .st-key-side_step_plan [data-testid="stVerticalBlockBorderWrapper"],
+      section[data-testid="stSidebar"] .st-key-side_step_action [data-testid="stVerticalBlockBorderWrapper"] {
+        background: #ffffff; border: 1px solid #dce6ee; border-radius: 18px;
+        box-shadow: 0 1px 2px rgba(12, 32, 54, .03), 0 7px 18px rgba(12, 32, 54, .035);
+        margin-bottom: .72rem; overflow: hidden;
+      }
+      section[data-testid="stSidebar"] .st-key-side_step_location [data-testid="stVerticalBlockBorderWrapper"] > div,
+      section[data-testid="stSidebar"] .st-key-side_step_vessel [data-testid="stVerticalBlockBorderWrapper"] > div,
+      section[data-testid="stSidebar"] .st-key-side_step_plan [data-testid="stVerticalBlockBorderWrapper"] > div,
+      section[data-testid="stSidebar"] .st-key-side_step_action [data-testid="stVerticalBlockBorderWrapper"] > div {
+        padding: .86rem .78rem .82rem;
+      }
+      section[data-testid="stSidebar"] label p {
+        color: #344b5f; font-size: .82rem; font-weight: 520;
+      }
+      .side-header {
+        background: linear-gradient(130deg, #09283f, #0c657d);
+        border-radius: 18px; color: #ffffff; padding: .92rem .88rem .86rem;
+        box-shadow: 0 10px 22px rgba(6, 38, 56, .13); margin-bottom: .86rem;
+      }
+      .side-brand {font-size: 1.08rem; font-weight: 700; color: #ffffff; margin-bottom: .25rem;}
+      .side-subtitle {font-size: .78rem; color: rgba(255,255,255,.76); line-height: 1.5;}
       .topbar {
         background: linear-gradient(112deg, #071e35, #0b5168 63%, #128ca5);
         border-radius: 18px; color: #fff; padding: 1rem 1.25rem;
@@ -48,20 +72,49 @@ st.markdown(
         padding: .38rem .72rem; border: 1px solid rgba(255,255,255,.28);
         border-radius: 999px; font-size: .82rem; background: rgba(255,255,255,.1);
       }
-      .side-brand {font-size: 1.15rem; font-weight: 700; color: var(--ink); margin-bottom: .15rem;}
-      .side-subtitle {font-size: .84rem; color: var(--muted); margin-bottom: .82rem;}
       .step-title {
         display: flex; align-items: center; gap: .52rem; color: var(--ink);
-        font-weight: 650; font-size: .92rem; margin: .86rem 0 .45rem;
+        font-weight: 700; font-size: .9rem; margin: 0 0 .65rem;
       }
       .step-no {
         display: inline-flex; align-items: center; justify-content: center; height: 1.34rem;
-        width: 1.34rem; border-radius: 50%; background: #e4f5f8; color: #08758e;
+        width: 1.34rem; border-radius: 7px; background: #e4f5f8; color: #08758e;
         font-size: .72rem; font-weight: 750;
       }
       .hint {
-        color: var(--muted); font-size: .8rem; background: #f4f8fb; border-radius: 10px;
-        padding: .52rem .62rem; margin: .35rem 0;
+        color: var(--muted); font-size: .8rem; background: #f5f8fb; border: 1px solid #edf3f7;
+        border-radius: 12px; padding: .62rem .66rem; margin: .52rem 0 .12rem;
+      }
+      .constraint-note {
+        font-size: .74rem; line-height: 1.55; color: #778a9b;
+        margin-top: .7rem; margin-bottom: .1rem;
+      }
+      .live-caption {
+        font-size: .81rem; font-weight: 700; color: #08758e;
+        margin-bottom: .45rem;
+      }
+      .live-target {
+        color: #08758e; font-size: .81rem; font-weight: 700; line-height: 1.4;
+        margin-bottom: .42rem;
+      }
+      .live-target b {color: #08758e; font-weight: 700; margin-left: .18rem;}
+      .live-coordinates {
+        display: grid; gap: .26rem; padding: .1rem 0 .1rem;
+      }
+      .live-point {
+        display: grid; grid-template-columns: 4.45rem 1fr; align-items: baseline;
+        font-size: .83rem; color: #526a7d; line-height: 1.52;
+      }
+      .live-point-label {font-weight: 550;}
+      .live-point-value {
+        color: #3d566b; font-size: .83rem; font-weight: 520;
+        font-variant-numeric: tabular-nums; letter-spacing: .005em;
+      }
+      .live-point.active .live-point-label,
+      .live-point.active .live-point-value {color: #075e75; font-weight: 700;}
+      .live-note {
+        color: #8494a4; font-size: .73rem; line-height: 1.45;
+        margin-top: .5rem; padding-top: .42rem; border-top: 1px dashed #d9e4ed;
       }
       .metric-note {font-size: .78rem; color: var(--muted); margin-top: .26rem;}
       div[data-testid="stMetric"] {
@@ -193,16 +246,21 @@ def point_marker(map_obj: folium.Map, point: tuple[float, float], label: str, co
 
 
 def input_map(
-    start_point: tuple[float, float],
-    end_point: tuple[float, float],
+    view_start: tuple[float, float],
+    view_end: tuple[float, float],
     tile_name: str,
 ) -> folium.Map:
-    center = ((start_point[0] + end_point[0]) / 2, (start_point[1] + end_point[1]) / 2)
+    center = ((view_start[0] + view_end[0]) / 2, (view_start[1] + view_end[1]) / 2)
     map_obj = create_map(center, tile_name)
-    point_marker(map_obj, start_point, "当前起点", "green")
-    point_marker(map_obj, end_point, "当前终点", "red")
-    map_obj.fit_bounds([start_point, end_point])
+    map_obj.fit_bounds([view_start, view_end])
     return map_obj
+
+
+def endpoint_layer(start_point: tuple[float, float], end_point: tuple[float, float]) -> folium.FeatureGroup:
+    layer = folium.FeatureGroup(name="当前规划端点")
+    point_marker(layer, start_point, "当前起点", "green")
+    point_marker(layer, end_point, "当前终点", "red")
+    return layer
 
 
 def reliability_text(confidence: float) -> str:
@@ -362,62 +420,82 @@ defaults = {
     "planned_source": "",
     "planned_requested": ["综合最优线路"],
     "planner_feedback": None,
+    "picker_view_start": default_start,
+    "picker_view_end": default_end,
+    "processed_map_click": None,
 }
 for key, value in defaults.items():
     st.session_state.setdefault(key, value)
 
 with st.sidebar:
-    st.markdown('<div class="side-brand">航程规划控制台</div>', unsafe_allow_html=True)
-    st.markdown('<div class="side-subtitle">按步骤设置条件并生成可解释路线</div>', unsafe_allow_html=True)
-
-    st.markdown('<div class="step-title"><span class="step-no">01</span>选择起点与终点</div>', unsafe_allow_html=True)
-    input_mode = st.radio("定位方式", ["地图选点", "快捷港区", "精确坐标"], horizontal=True, label_visibility="collapsed")
-    start_point = st.session_state.planner_start
-    end_point = st.session_state.planner_end
-    start_name = st.session_state.planner_start_name
-    end_name = st.session_state.planner_end_name
-    if input_mode == "快捷港区":
-        start_name = st.selectbox("起点", list(locations), index=list(locations).index(default_start_name))
-        end_name = st.selectbox("终点", list(locations), index=list(locations).index(default_end_name))
-        start_point, end_point = locations[start_name], locations[end_name]
-    elif input_mode == "精确坐标":
-        start_lat = st.number_input("起点纬度", value=float(start_point[0]), format="%.6f")
-        start_lon = st.number_input("起点经度", value=float(start_point[1]), format="%.6f")
-        end_lat = st.number_input("终点纬度", value=float(end_point[0]), format="%.6f")
-        end_lon = st.number_input("终点经度", value=float(end_point[1]), format="%.6f")
-        start_point, end_point = (start_lat, start_lon), (end_lat, end_lon)
-        start_name, end_name = "坐标起点", "坐标终点"
-    else:
-        st.markdown(
-            f'<div class="hint">在地图上点击后设为起点或终点。<br>'
-            f'起点：{start_point[0]:.5f}, {start_point[1]:.5f}<br>'
-            f'终点：{end_point[0]:.5f}, {end_point[1]:.5f}</div>',
-            unsafe_allow_html=True,
-        )
-
-    st.markdown('<div class="step-title"><span class="step-no">02</span>设置船舶约束</div>', unsafe_allow_html=True)
-    ship_type = st.selectbox("船舶模板", list(SHIP_PRESETS), index=0)
-    preset = SHIP_PRESETS[ship_type]
-    with st.expander("吃水与净空参数", expanded=False):
-        ship_draft = st.number_input("吃水深度 (m)", min_value=0.1, value=preset["draft"], step=0.1)
-        ship_air_draft = st.number_input("净空高度 (m)", min_value=1.0, value=preset["air_draft"], step=0.5)
-
-    st.markdown('<div class="step-title"><span class="step-no">03</span>选择规划方式</div>', unsafe_allow_html=True)
-    requested_routes = st.multiselect(
-        "规划目标（可选一种或多种）",
-        list(STRATEGIES),
-        default=["综合最优线路"],
-        format_func=route_label,
-    )
-    algorithm = st.radio("规划算法", ["A*", "Dijkstra"], horizontal=True, key="planning_algorithm")
-    tile_name = st.selectbox("地图底图", list(TILE_OPTIONS), index=0)
-
-    st.markdown('<div class="step-title"><span class="step-no">04</span>生成航线</div>', unsafe_allow_html=True)
-    submitted = st.button("开始规划", type="primary", width="stretch")
     st.markdown(
-        '<div class="hint">约束字段当前用于验证规划机制，不能替代真实水深、桥梁净空或海事通告。</div>',
+        '<div class="side-header"><div class="side-brand">航程规划控制台</div>'
+        '<div class="side-subtitle">依次设定位置、船舶约束与规划方式，生成可解释航线</div></div>',
         unsafe_allow_html=True,
     )
+
+    with st.container(border=True, key="side_step_location"):
+        st.markdown('<div class="step-title"><span class="step-no">01</span>选择起点与终点</div>', unsafe_allow_html=True)
+        input_mode = st.radio("定位方式", ["地图选点", "快捷港区", "精确坐标"], horizontal=True, label_visibility="collapsed")
+        start_point = st.session_state.planner_start
+        end_point = st.session_state.planner_end
+        start_name = st.session_state.planner_start_name
+        end_name = st.session_state.planner_end_name
+        if input_mode == "快捷港区":
+            start_name = st.selectbox("起点", list(locations), index=list(locations).index(default_start_name))
+            end_name = st.selectbox("终点", list(locations), index=list(locations).index(default_end_name))
+            start_point, end_point = locations[start_name], locations[end_name]
+        elif input_mode == "精确坐标":
+            start_lat = st.number_input("起点纬度", value=float(start_point[0]), format="%.6f")
+            start_lon = st.number_input("起点经度", value=float(start_point[1]), format="%.6f")
+            end_lat = st.number_input("终点纬度", value=float(end_point[0]), format="%.6f")
+            end_lon = st.number_input("终点经度", value=float(end_point[1]), format="%.6f")
+            start_point, end_point = (start_lat, start_lon), (end_lat, end_lon)
+            start_name, end_name = "坐标起点", "坐标终点"
+        else:
+            edit_target = st.radio(
+                "点击地图修改",
+                ["起点", "终点"],
+                horizontal=True,
+                key="map_edit_target",
+            )
+            st.markdown(
+                f'<div class="hint"><div class="live-caption">当前选点坐标（实时更新）</div>'
+                f'<div class="live-target">正在修改：<b>{edit_target}</b></div>'
+                f'<div class="live-coordinates">'
+                f'<div class="live-point{" active" if edit_target == "起点" else ""}"><span class="live-point-label">当前起点</span><span class="live-point-value">{start_point[0]:.5f}, {start_point[1]:.5f}</span></div>'
+                f'<div class="live-point{" active" if edit_target == "终点" else ""}"><span class="live-point-label">当前终点</span><span class="live-point-value">{end_point[0]:.5f}, {end_point[1]:.5f}</span></div>'
+                f'</div>'
+                f'<div class="live-note">用法：先选择修改起点或终点，再点击地图设置新位置。</div></div>',
+                unsafe_allow_html=True,
+            )
+
+    with st.container(border=True, key="side_step_vessel"):
+        st.markdown('<div class="step-title"><span class="step-no">02</span>设置船舶约束</div>', unsafe_allow_html=True)
+        ship_type = st.selectbox("船舶模板", list(SHIP_PRESETS), index=0)
+        preset = SHIP_PRESETS[ship_type]
+        with st.expander("吃水与净空参数", expanded=False):
+            ship_draft = st.number_input("吃水深度 (m)", min_value=0.1, value=preset["draft"], step=0.1)
+            ship_air_draft = st.number_input("净空高度 (m)", min_value=1.0, value=preset["air_draft"], step=0.5)
+
+    with st.container(border=True, key="side_step_plan"):
+        st.markdown('<div class="step-title"><span class="step-no">03</span>选择规划方式</div>', unsafe_allow_html=True)
+        requested_routes = st.multiselect(
+            "规划目标（可选一种或多种）",
+            list(STRATEGIES),
+            default=["综合最优线路"],
+            format_func=route_label,
+        )
+        algorithm = st.radio("规划算法", ["A*", "Dijkstra"], horizontal=True, key="planning_algorithm")
+        tile_name = st.selectbox("地图底图", list(TILE_OPTIONS), index=0)
+
+    with st.container(border=True, key="side_step_action"):
+        st.markdown('<div class="step-title"><span class="step-no">04</span>生成航线</div>', unsafe_allow_html=True)
+        submitted = st.button("开始规划", type="primary", width="stretch")
+        st.markdown(
+            '<div class="hint constraint-note">当前约束用于验证规划机制，不能替代真实水深、桥梁净空或海事通告。</div>',
+            unsafe_allow_html=True,
+        )
 
 if submitted:
     st.session_state.planned_routes = {}
@@ -474,6 +552,8 @@ if feedback:
     feedback_type, feedback_message = feedback
     if feedback_type == "success":
         st.success(feedback_message)
+    elif feedback_type == "info":
+        st.info(feedback_message)
     else:
         st.error(feedback_message)
 
@@ -526,20 +606,24 @@ if routes:
         )
         if input_mode == "地图选点" and click_result and click_result.get("last_clicked"):
             click = click_result["last_clicked"]
-            pick_1, pick_2, pick_3 = st.columns([2, 1, 1])
-            pick_1.caption(f"选中位置：{click['lat']:.6f}, {click['lng']:.6f}")
-            if pick_2.button("设为起点", key="result_start"):
-                st.session_state.planner_start = (float(click["lat"]), float(click["lng"]))
+            clicked_point = (float(click["lat"]), float(click["lng"]))
+            click_signature = (round(clicked_point[0], 7), round(clicked_point[1], 7))
+            if st.session_state.map_edit_target == "起点":
+                st.session_state.planner_start = clicked_point
                 st.session_state.planner_start_name = "地图选定起点"
-                st.session_state.planned_routes = {}
-                st.session_state.planner_feedback = None
-                st.rerun()
-            if pick_3.button("设为终点", key="result_end"):
-                st.session_state.planner_end = (float(click["lat"]), float(click["lng"]))
+            else:
+                st.session_state.planner_end = clicked_point
                 st.session_state.planner_end_name = "地图选定终点"
-                st.session_state.planned_routes = {}
-                st.session_state.planner_feedback = None
-                st.rerun()
+            st.session_state.planned_routes = {}
+            st.session_state.planned_meta = {}
+            st.session_state.picker_view_start = st.session_state.planner_start
+            st.session_state.picker_view_end = st.session_state.planner_end
+            st.session_state.processed_map_click = click_signature
+            st.session_state.planner_feedback = (
+                "info",
+                f"{st.session_state.map_edit_target}已更新，请继续调整或点击“开始规划”。",
+            )
+            st.rerun()
     with result_column:
         selected = routes[active_route]
         metrics = selected.metrics
@@ -605,38 +689,46 @@ if routes:
 else:
     map_column, result_column = st.columns([1.7, 0.9], gap="large")
     with map_column:
-        picker_map = input_map(start_point, end_point, tile_name)
+        picker_map = input_map(
+            st.session_state.picker_view_start,
+            st.session_state.picker_view_end,
+            tile_name,
+        )
         click_result = st_folium(
             picker_map,
             height=650,
             use_container_width=True,
             key=f"picker_map_{input_mode}_{tile_name}",
             returned_objects=["last_clicked"] if input_mode == "地图选点" else [],
+            feature_group_to_add=endpoint_layer(start_point, end_point),
         )
         if input_mode == "地图选点" and click_result and click_result.get("last_clicked"):
             click = click_result["last_clicked"]
-            pick_1, pick_2, pick_3 = st.columns([2, 1, 1])
-            pick_1.caption(f"选中位置：{click['lat']:.6f}, {click['lng']:.6f}")
-            if pick_2.button("设为起点", key="picker_start"):
-                st.session_state.planner_start = (float(click["lat"]), float(click["lng"]))
-                st.session_state.planner_start_name = "地图选定起点"
-                st.session_state.planner_feedback = None
-                st.rerun()
-            if pick_3.button("设为终点", key="picker_end"):
-                st.session_state.planner_end = (float(click["lat"]), float(click["lng"]))
-                st.session_state.planner_end_name = "地图选定终点"
-                st.session_state.planner_feedback = None
+            clicked_point = (float(click["lat"]), float(click["lng"]))
+            click_signature = (round(clicked_point[0], 7), round(clicked_point[1], 7))
+            if click_signature != st.session_state.processed_map_click:
+                if st.session_state.map_edit_target == "起点":
+                    st.session_state.planner_start = clicked_point
+                    st.session_state.planner_start_name = "地图选定起点"
+                else:
+                    st.session_state.planner_end = clicked_point
+                    st.session_state.planner_end_name = "地图选定终点"
+                st.session_state.processed_map_click = click_signature
+                st.session_state.planner_feedback = (
+                    "info",
+                    f"{st.session_state.map_edit_target}已更新，请继续调整或点击“开始规划”。",
+                )
                 st.rerun()
     with result_column:
         st.markdown(
             """
             <div class="empty">
               <b>开始一次自定义规划</b><br>
-              1. 选择港区、点击地图或输入坐标确定航程。<br>
+              1. 在地图选点中选择要修改的端点，点击地图即可预览新位置。<br>
               2. 设置船舶吃水与净空限制。<br>
               3. 选择规划目标及算法。<br>
               4. 点击“开始规划”查看推荐路线与可导出结果。<br><br>
-              地图点击选点为默认入口；橙色提示仅在结果中表示真实低置信航段。
+              改点不会触发路线计算；橙色提示仅在结果中表示真实低置信航段。
             </div>
             """,
             unsafe_allow_html=True,
