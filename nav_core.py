@@ -128,9 +128,32 @@ def load_weight_edges() -> pd.DataFrame:
 
 
 def _matching_path(prefix: str, suffix: str) -> Path:
-    matches = list(BASE_DIR.glob(f"{prefix}_*{suffix}"))
-    if len(matches) != 1:
-        raise FileNotFoundError(f"无法唯一定位案例文件：{prefix}_*{suffix}")
+    """Find a case file while tolerating small filename variants.
+
+    Earlier code only accepted names such as ``region1_xxx_path_summary.csv``.
+    The shared coursework repository may instead contain files like
+    ``region1_path_summary.csv``.  This helper tries several compatible
+    patterns and returns the first stable match.
+    """
+    patterns = [
+        f"{prefix}_*{suffix}",
+        f"{prefix}{suffix}",
+        f"{prefix}*{suffix}",
+    ]
+    seen: set[Path] = set()
+    matches: list[Path] = []
+    for pattern in patterns:
+        for path in sorted(BASE_DIR.glob(pattern)):
+            if path not in seen:
+                seen.add(path)
+                matches.append(path)
+    if not matches:
+        pattern_text = " 或 ".join(patterns)
+        raise FileNotFoundError(f"无法定位案例文件：{pattern_text}")
+    if len(matches) > 1:
+        # Prefer the most explicit / shortest filename; this avoids crashing the
+        # interface when duplicate export variants exist in the repository.
+        matches = sorted(matches, key=lambda path: (len(path.name), path.name))
     return matches[0]
 
 
