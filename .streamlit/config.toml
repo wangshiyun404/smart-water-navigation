@@ -1,0 +1,14 @@
+[theme]
+base = "light"
+primaryColor = "#155EEF"
+backgroundColor = "#F6FAFC"
+secondaryBackgroundColor = "#FFFFFF"
+textColor = "#0B2239"
+borderColor = "#D8E7EE"
+baseRadius = "0.9rem"
+buttonRadius = "0.8rem"
+showWidgetBorder = true
+
+[theme.sidebar]
+backgroundColor = "#EEF7FA"
+secondaryBackgroundColor = "#FFFFFF"
