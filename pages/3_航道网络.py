@@ -12,7 +12,7 @@ if LOCAL_DEPENDENCIES.exists():
 
 import streamlit as st
 
-from nav_core import CASES, case_interpretation, load_base_edges, load_case_summary, load_nodes
+from nav_core import CASES, case_interpretation, load_case_summary, load_nodes, load_weight_edges
 from ui import hero, inject_global_css, metric_card, section_title
 
 
@@ -26,22 +26,34 @@ hero(
 )
 
 nodes = load_nodes()
-edges = load_base_edges()
+# The fork does not currently include edges.csv.  The weighted edge workbook is
+# the authoritative edge table used by the planner, so this page uses it as the
+# network source instead of load_base_edges().
+edges = load_weight_edges()
+stat_edges = edges[edges["has_stats"]].copy()
 
 c1, c2, c3, c4 = st.columns(4)
 with c1:
     metric_card("节点数量", f"{len(nodes):,}", "航道位置骨架")
 with c2:
-    metric_card("有向边数量", f"{len(edges):,}", "保留通行方向")
+    metric_card("规划边数量", f"{len(edges):,}", "来自动态边权表")
 with c3:
     metric_card("平均出边", f"{len(edges) / len(nodes):.2f}", "粗略反映网络连通度")
 with c4:
-    metric_card("案例区域", f"{len(CASES)}", "用于课堂或比赛演示")
+    metric_card("统计边数量", f"{len(stat_edges):,}", "具有历史通行统计")
 
 section_title("节点热度样例", "按轨迹点聚合数量查看高频位置，适合解释“哪些地方更像航道枢纽”。")
 hot_nodes = nodes.sort_values("point_count", ascending=False).head(12)
 st.dataframe(
     hot_nodes[["node_id", "lat", "lon", "point_count"]],
+    hide_index=True,
+    use_container_width=True,
+)
+
+section_title("高置信航段样例", "从动态边权表中抽取置信度较高、通行次数较多的航段，说明系统如何形成“经验航道”。")
+edge_sample = edges.sort_values(["confidence", "planning_pass_count"], ascending=False).head(12)
+st.dataframe(
+    edge_sample[["start_node", "end_node", "distance_m", "planning_time_s", "planning_pass_count", "confidence"]],
     hide_index=True,
     use_container_width=True,
 )
