@@ -96,7 +96,6 @@ st.markdown(
 
 section_title("典型案例如何讲解")
 for case_name in CASES:
-    summary = load_case_summary(case_name)
     case_meta = CASES[case_name]
     with st.container(border=True):
         left, right = st.columns([0.28, 0.72])
@@ -105,12 +104,19 @@ for case_name in CASES:
             st.caption(case_meta["caption"])
             st.markdown(f"**展示重点：**{case_meta['focus']}")
         with right:
-            st.markdown(case_interpretation(case_name))
-            st.dataframe(
-                summary[["strategy", "distance_km", "time_min", "avg_confidence", "low_confidence_pct"]],
-                hide_index=True,
-                use_container_width=True,
-            )
+            try:
+                summary = load_case_summary(case_name)
+                st.markdown(case_interpretation(case_name))
+                st.dataframe(
+                    summary[["strategy", "distance_km", "time_min", "avg_confidence", "low_confidence_pct"]],
+                    hide_index=True,
+                    use_container_width=True,
+                )
+            except FileNotFoundError as exc:
+                st.info(
+                    f"当前仓库没有找到 {case_name} 的案例路线 CSV 文件，已跳过案例表格。"
+                    f"缺失信息：{exc}。这不影响数据治理、航道网络、动态边权等页面的展示。"
+                )
 
 section_title("演示边界")
 st.markdown(
